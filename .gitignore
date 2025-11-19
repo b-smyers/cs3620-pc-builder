@@ -1,0 +1,12 @@
+node_modules/
+dist/
+
+# Enviroment variables
+.env
+
+# sqlite
+*.db*
+
+# Development
+.editorconfig
+.vscode/

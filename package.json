@@ -1,0 +1,27 @@
+{
+  "name": "pc-builder",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start:api": "pnpm --filter api start",
+    "start:ui": "pnpm --filter ui start",
+    "start": "concurrently \"pnpm start:api\" \"pnpm start:ui\"",
+    "dev:api": "pnpm --filter api dev",
+    "dev:ui": "pnpm --filter ui dev",
+    "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:ui\"",
+    "build:api": "pnpm --filter api build",
+    "build:ui": "pnpm --filter ui build",
+    "build": "concurrently \"pnpm build:api\" \"pnpm build:ui\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "eslint": "^9.36.0",
+    "eslint-plugin-node": "^11.1.0"
+  },
+  "dependencies": {
+    "axios": "^1.12.2"
+  }
+}
