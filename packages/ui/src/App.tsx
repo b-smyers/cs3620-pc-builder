@@ -1,8 +1,9 @@
 function App() {
   return (
-    <div>
-      <p>Yo</p>
-    </div>
+    <>
+      <h1>Build a computer</h1>
+      <input />
+    </>
   );
 }
 

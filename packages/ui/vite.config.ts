@@ -10,6 +10,5 @@ export default defineConfig({
   },
   preview: {
     port: 3000,
-    allowedHosts: ["rolytics.bot.nu"],
   },
 });

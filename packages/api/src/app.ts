@@ -1,9 +1,9 @@
-import { NotFound, TooManyRequests } from "./lib/api-response";
+import { NotFound } from "./lib/api-response";
 import express, { Request, Response } from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import apiRoutes from "./routes/api.routes";
+import apiRoutes from "./routes/api.route";
 
 const app = express();
 app.set("trust proxy", 1);
