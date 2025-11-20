@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS optical_drive (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         bd INTEGER,
         dvd INTEGER,

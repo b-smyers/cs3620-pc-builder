@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS memory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         speed TEXT,
         modules TEXT,

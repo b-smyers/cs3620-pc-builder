@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS monitor (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         screen_size INTEGER,
         resolution TEXT,

@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS mouse (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         tracking_method TEXT,
         connection_type TEXT,

@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS cpu (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         core_count INTEGER,
         core_clock NUMERIC,

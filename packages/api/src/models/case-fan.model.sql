@@ -1,9 +1,9 @@
 CREATE TABLE
     IF NOT EXISTS case_fan (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
-        `size` TEXT,
+        size TEXT,
         color TEXT,
         rpm TEXT,
         airflow TEXT,

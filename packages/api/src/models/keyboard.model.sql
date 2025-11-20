@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS keyboard (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         style TEXT,
         switches TEXT,

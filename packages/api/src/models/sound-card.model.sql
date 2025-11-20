@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS sound_card (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         channels NUMERIC,
         digital_audio INTEGER,

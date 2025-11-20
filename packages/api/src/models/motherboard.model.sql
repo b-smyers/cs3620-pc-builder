@@ -1,7 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS motherboard (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        `name` TEXT,
+        name TEXT,
         price NUMERIC,
         socket TEXT,
         form_factor TEXT,
