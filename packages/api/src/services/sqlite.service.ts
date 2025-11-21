@@ -7,15 +7,12 @@ const dbFile: string =
 
 // SQL schema files
 const modelFiles: string[] = [
-  path.join(__dirname, "../models", "case-accessory.model.sql"),
   path.join(__dirname, "../models", "keyboard.model.sql"),
   path.join(__dirname, "../models", "speakers.model.sql"),
-  path.join(__dirname, "../models", "case-fan.model.sql"),
   path.join(__dirname, "../models", "memory.model.sql"),
   path.join(__dirname, "../models", "thermal-paste.model.sql"),
   path.join(__dirname, "../models", "pc-case.model.sql"),
   path.join(__dirname, "../models", "monitor.model.sql"),
-  path.join(__dirname, "../models", "ups.model.sql"),
   path.join(__dirname, "../models", "cpu-cooler.model.sql"),
   path.join(__dirname, "../models", "motherboard.model.sql"),
   path.join(__dirname, "../models", "video-card.model.sql"),
@@ -23,11 +20,7 @@ const modelFiles: string[] = [
   path.join(__dirname, "../models", "mouse.model.sql"),
   path.join(__dirname, "../models", "webcam.model.sql"),
   path.join(__dirname, "../models", "external-hard-drive.model.sql"),
-  path.join(__dirname, "../models", "optical-drive.model.sql"),
-  path.join(__dirname, "../models", "wired-network-card.model.sql"),
-  path.join(__dirname, "../models", "fan-controller.model.sql"),
   path.join(__dirname, "../models", "os.model.sql"),
-  path.join(__dirname, "../models", "wireless-network-card.model.sql"),
   path.join(__dirname, "../models", "headphones.model.sql"),
   path.join(__dirname, "../models", "power-supply.model.sql"),
   path.join(__dirname, "../models", "internal-hard-drive.model.sql"),

@@ -7,15 +7,12 @@ const router = Router();
 
 // List of tables / endpoints
 const tables = [
-  "case-accessory",
   "keyboard",
   "speakers",
-  "case-fan",
   "memory",
   "thermal-paste",
   "pc-case",
   "monitor",
-  "ups",
   "cpu-cooler",
   "motherboard",
   "video-card",
@@ -23,11 +20,7 @@ const tables = [
   "mouse",
   "webcam",
   "external-hard-drive",
-  "optical-drive",
-  "wired-network-card",
-  "fan-controller",
   "os",
-  "wireless-network-card",
   "headphones",
   "power-supply",
   "internal-hard-drive",
