@@ -26,6 +26,7 @@ const modelFiles: string[] = [
   path.join(__dirname, "../models", "internal-hard-drive.model.sql"),
   path.join(__dirname, "../models", "sound-card.model.sql"),
   path.join(__dirname, "../models", "computer.model.sql"),
+  path.join(__dirname, "../models", "users.model.sql"),
 ];
 
 const db = new Database(dbFile);

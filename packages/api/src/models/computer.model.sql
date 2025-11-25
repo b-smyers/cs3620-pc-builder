@@ -1,6 +1,7 @@
 CREATE TABLE
     IF NOT EXISTS computer (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
         -- Core components
         pc_case_id INTEGER,
         motherboard_id INTEGER,
@@ -21,6 +22,7 @@ CREATE TABLE
         speakers_id INTEGER,
         headphones_id INTEGER,
         mouse_id INTEGER,
+        FOREIGN KEY (user_id) REFERENCES users (id),
         FOREIGN KEY (keyboard_id) REFERENCES keyboard (id),
         FOREIGN KEY (speakers_id) REFERENCES speakers (id),
         FOREIGN KEY (memory_id) REFERENCES memory (id),

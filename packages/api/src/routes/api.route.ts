@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware";
 import db from "../services/sqlite.service";
-import { OK, InternalServerError } from "../lib/api-response";
+import { OK, InternalServerError, BadRequest } from "../lib/api-response";
 
 const router = Router();
 
@@ -25,7 +25,6 @@ const tables = [
   "power-supply",
   "internal-hard-drive",
   "sound-card",
-  "computer",
 ];
 
 tables.forEach((endpoint) => {
@@ -52,7 +51,7 @@ tables.forEach((endpoint) => {
     try {
       const rows = db
         .prepare(`SELECT * FROM \`${table}\` WHERE id = ?`)
-        .all(id);
+        .get(id);
       return res.status(200).json(OK("Successfully retrieved data", rows));
     } catch (err: any) {
       console.error(`DB error for ${table}:`, err);
@@ -60,5 +59,101 @@ tables.forEach((endpoint) => {
     }
   });
 });
+
+router.get('/computer', (req, res) => {
+  if (!req.session.user) {
+    return res.status(400).json(BadRequest("You are not logged in"))
+  }
+
+  try {
+    const userId = req.session.user.id
+
+    // Check if the user already has a computer record
+    const existing = db
+      .prepare("SELECT id FROM computer WHERE user_id = ?")
+      .get(userId);
+
+    if (!existing) {
+      // --- INSERT NEW RECORD ---
+      const query = `INSERT INTO computer (user_id) VALUES (?)`
+      db.prepare(query).run(userId);
+    }
+    const query = `SELECT * FROM computer WHERE user_id = ?`
+    const computer = db.prepare(query).get(userId);
+
+    return res.status(200).json(OK("Successfully retrieved data", computer));
+
+  } catch (err: any) {
+    console.error(`DB error for computer:`, err);
+    return res.status(500).json(InternalServerError());
+  }
+})
+
+tables.forEach((endpoint) => {
+  router.post(`/computer/${endpoint}`, (req, res) => {
+    if (!req.session.user) {
+      return res.status(400).json(BadRequest("You are not logged in"));
+    }
+
+    try {
+      const { id } = req.body; // the part ID
+      const userId = req.session.user.id;
+
+      // Ensure user has a computer record
+      const existing = db
+        .prepare("SELECT id FROM computer WHERE user_id = ?")
+        .get(userId);
+
+      if (!existing) {
+        db.prepare("INSERT INTO computer (user_id) VALUES (?)").run(userId);
+      }
+
+      // Update only this part
+      const column = `${endpoint.replace(/-/g, "_")}_id`;
+      const query = `UPDATE computer SET ${column} = ? WHERE user_id = ?`;
+      db.prepare(query).run(id, userId);
+
+      return res.status(200).json(OK(`Successfully updated ${endpoint}`));
+    } catch (err: any) {
+      console.error(`DB error for computer ${endpoint}:`, err);
+      return res.status(500).json(InternalServerError());
+    }
+  });
+});
+
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password)
+      return res.status(400).json(BadRequest("Missing username or password"));
+
+    // 1. Try to find the user
+    const existing = db
+      .prepare("SELECT * FROM users WHERE username = ? AND password = ?")
+      .get(username, password);
+
+    let userId: number;
+
+    if (existing) {
+      userId = existing.id;
+    } else {
+      // 2. Create user if not found
+      const result = db
+        .prepare("INSERT INTO users (username, password) VALUES (?, ?)")
+        .run(username, password);
+
+      userId = result.lastInsertRowid as number;
+    }
+
+    // 4. Save to session
+    req.session.user = { id: userId };
+
+    return res.status(200).json(OK("Logged in", { userId }));
+  } catch (err: any) {
+    console.error("DB error for login:", err);
+    return res.status(500).json(InternalServerError());
+  }
+});
+
 
 export default router;
