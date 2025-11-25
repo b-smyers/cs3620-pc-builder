@@ -45,4 +45,20 @@ tables.forEach((endpoint) => {
   });
 });
 
+tables.forEach((endpoint) => {
+  router.get(`/${endpoint}/:id`, (req, res) => {
+    const table = endpoint.replace(/-/g, "_"); // map endpoint to table
+    const id = req.params.id;
+    try {
+      const rows = db
+        .prepare(`SELECT * FROM \`${table}\` WHERE id = ?`)
+        .all(id);
+      return res.status(200).json(OK("Successfully retrieved data", rows));
+    } catch (err: any) {
+      console.error(`DB error for ${table}:`, err);
+      return res.status(500).json(InternalServerError());
+    }
+  });
+});
+
 export default router;

@@ -5,8 +5,9 @@ import app from "./app";
 // Setup http server
 const httpServer = http.createServer(app);
 
-httpServer.listen(process.env.HTTP_PORT, () => {
+const port = process.env.HTTP_PORT || 5000
+httpServer.listen(port, () => {
   console.log(
-    `HTTP server listening: http://localhost:${process.env.HTTP_PORT}`,
+    `HTTP server listening: http://localhost:${port}`,
   );
 });

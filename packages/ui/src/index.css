@@ -68,7 +68,6 @@ html.dark {
 h1, h2, h3, h4, h5, h6, a, p, li, ul {
   color: var(--text-primary);
   margin: 0;
-  font-weight: inherit;
 }
 
 a {
