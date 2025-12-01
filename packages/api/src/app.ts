@@ -18,10 +18,11 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: true,
+      secure: false,
       maxAge: 7 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
+      path: '/api'
     },
   })
 );

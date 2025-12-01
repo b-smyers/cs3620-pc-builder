@@ -116,22 +116,29 @@ export function PCBuilder() {
 
   async function updateComputer(partial: Partial<Computer>) {
     console.log("partial:", partial);
+
     const before = computer;
     const after = { ...computer, ...partial };
 
     if (!loggedIn) {
-      // try to login
       await login(username, password);
       if (!loggedIn) return;
     }
 
     setComputer(after);
+
     try {
       setComputerLoading(true);
-      console.log("Updaing computer:", partial);
-      const partType = Object.keys(partial)[0].replaceAll("_", "-"); // "keyboard", "cpu", etc.
+      console.log("Updating computer:", partial);
+
+      const field = Object.keys(partial)[0] as keyof Computer;     // e.g. "cpu"
+      const value = partial[field];              // object or undefined
+      const isRemove = value === undefined;
+
+      const partType = field.replaceAll("_", "-");
+
       await api.post(`computer/${partType}`, {
-        id: Object.values(partial)[0].id,
+        id: isRemove ? null : value.id,
       });
     } catch (error) {
       console.log(error);
@@ -241,141 +248,141 @@ export function PCBuilder() {
 
   return (
     <Layout>
-        <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 items-center">
-          <h1 className="font-bold text-2xl">Account</h1>
-          {!loggedIn ? (
-            <>
-              <p className="text-center">
-                You are currently logged out, your changes will not be saved.
-                <br />
-                Create or login to your account to save your computer.
-              </p>
-              <div className="flex flex-row gap-2 w-full">
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-stone-400 rounded-xl p-2 flex-1"
-                />
-                <input
-                  type="text"
-                  name="password"
-                  id="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-stone-400 rounded-xl p-2 flex-1"
-                />
-                <button
-                  onClick={() => login(username, password)}
-                  className="px-4 py-2 whitespace-nowrap"
-                >
-                  Login
-                </button>
-              </div>
-            </>
-          ) : (
-            <p>You are logged in, your changes will be saved.</p>
-          )}
-
-          <h1 className="font-bold text-2xl">My Computer</h1>
-          <div className="flex flex-col w-full h-full bg-stone-700 rounded-3xl p-4 gap-4 overflow-auto">
-            <div className="border-b-2 flex justify-end font-bold text-2xl">
-              <p>
-                Total: $
-                {Object.entries(computer)
-                  .reduce((sum, [_, part]) => sum + Number(part?.price ?? 0), 0)
-                  .toFixed(2)}
-              </p>
-            </div>
-
-            {!computerLoading ? (
-              Object.entries(computer).map(([partType, part]) =>
-                part ? (
-                  <div className="group flex flex-row justify-between items-center">
-                    <p className="font-bold">{part.name}</p>
-                    <div className="flex flex-row gap-4 items-center">
-                      <p>${part.price ?? "0.00"}</p>
-                      <button
-                        onClick={() =>
-                          updateComputer({ [partType]: undefined })
-                        }
-                        className="!bg-red-500 font-bold"
-                      >
-                        X
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-row justify-between items-center text-stone-400">
-                    <p className="capitalize">
-                      Add {partType.replaceAll("-", " ")}
-                    </p>
-                    <button
-                      onClick={() =>
-                        getData(partType.toLowerCase().replaceAll("_", "-"))
-                      }
-                      className="!text-white font-bold"
-                    >
-                      +
-                    </button>
-                  </div>
-                )
-              )
-            ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <p className="italic">Loading...</p>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col flex-1 items-center gap-4 p-8">
-          <h1 className="font-bold text-2xl">Parts</h1>
-          <div className="grid grid-cols-3 w-full gap-2">
-            {parts.map((part) => (
+      <div className="flex flex-col flex-1 items-center justify-center gap-4 p-8 items-center">
+        <h1 className="font-bold text-2xl">Account</h1>
+        {!loggedIn ? (
+          <>
+            <p className="text-center">
+              You are currently logged out, your changes will not be saved.
+              <br />
+              Create or login to your account to save your computer.
+            </p>
+            <div className="flex flex-row gap-2 w-full">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="bg-stone-400 rounded-xl p-2 flex-1"
+              />
+              <input
+                type="text"
+                name="password"
+                id="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-stone-400 rounded-xl p-2 flex-1"
+              />
               <button
-                className={`break-all capitalize ${part.type != selectedPartType && "!bg-stone-700"}`}
-                onClick={() => getData(part.endpoint)}
+                onClick={() => login(username, password)}
+                className="px-4 py-2 whitespace-nowrap"
               >
-                {part.type}
+                Login
               </button>
-            ))}
+            </div>
+          </>
+        ) : (
+          <p>You are logged in, your changes will be saved.</p>
+        )}
+
+        <h1 className="font-bold text-2xl">My Computer</h1>
+        <div className="flex flex-col w-full h-full bg-stone-700 rounded-3xl p-4 gap-4 overflow-auto">
+          <div className="border-b-2 flex justify-end font-bold text-2xl">
+            <p>
+              Total: $
+              {Object.entries(computer)
+                .reduce((sum, [_, part]) => sum + Number(part?.price ?? 0), 0)
+                .toFixed(2)}
+            </p>
           </div>
-          <div className="flex flex-col w-full overflow-auto flex-grow">
-            <h1 className="font-bold text-2xl text-center">
-              {selectedPartType}
-            </h1>
-            {!dataLoading ? (
-              data &&
-              data.map((item) => (
-                <div className="flex flex-row items-center justify-between py-1 px-4">
-                  <p>{item.name}</p>
-                  <div className="flex flex-row gap-2 items-center">
-                    <p>${item.price ?? "-.--"}</p>
+
+          {!computerLoading ? (
+            Object.entries(computer).map(([partType, part]) =>
+              part ? (
+                <div className="group flex flex-row justify-between items-center">
+                  <p className="font-bold">{part.name}</p>
+                  <div className="flex flex-row gap-4 items-center">
+                    <p>${part.price ?? "0.00"}</p>
                     <button
                       onClick={() =>
-                        updateComputer({
-                          [selectedPartType.toLowerCase().replaceAll(" ", "_")]:
-                            item,
-                        })
+                        updateComputer({ [partType]: undefined })
                       }
-                      className="font-bold"
+                      className="!bg-red-500 font-bold"
                     >
-                      +
+                      X
                     </button>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <p className="italic">Loading...</p>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="flex flex-row justify-between items-center text-stone-400">
+                  <p className="capitalize">
+                    Add {partType.replaceAll("-", " ")}
+                  </p>
+                  <button
+                    onClick={() =>
+                      getData(partType.toLowerCase().replaceAll("_", "-"))
+                    }
+                    className="!text-white font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              )
+            )
+          ) : (
+            <div className="flex flex-1 items-center justify-center">
+              <p className="italic">Loading...</p>
+            </div>
+          )}
         </div>
+      </div>
+      <div className="flex flex-col flex-1 items-center gap-4 p-8">
+        <h1 className="font-bold text-2xl">Parts</h1>
+        <div className="grid grid-cols-3 w-full gap-2">
+          {parts.map((part) => (
+            <button
+              className={`break-all capitalize ${part.type != selectedPartType && "!bg-stone-700"}`}
+              onClick={() => getData(part.endpoint)}
+            >
+              {part.type}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-col w-full overflow-auto flex-grow">
+          <h1 className="font-bold text-2xl text-center">
+            {selectedPartType}
+          </h1>
+          {!dataLoading ? (
+            data &&
+            data.map((item) => (
+              <div className="flex flex-row items-center justify-between py-1 px-4">
+                <p>{item.name}</p>
+                <div className="flex flex-row gap-2 items-center">
+                  <p>${item.price ?? "-.--"}</p>
+                  <button
+                    onClick={() =>
+                      updateComputer({
+                        [selectedPartType.toLowerCase().replaceAll(" ", "_")]:
+                          item,
+                      })
+                    }
+                    className="font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="flex flex-1 items-center justify-center">
+              <p className="italic">Loading...</p>
+            </div>
+          )}
+        </div>
+      </div>
     </Layout>
   );
 }
