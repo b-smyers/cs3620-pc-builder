@@ -60,13 +60,13 @@ tables.forEach((endpoint) => {
   });
 });
 
-router.get('/computer', (req, res) => {
+router.get("/computer", (req, res) => {
   if (!req.session.user) {
-    return res.status(400).json(BadRequest("You are not logged in"))
+    return res.status(400).json(BadRequest("You are not logged in"));
   }
 
   try {
-    const userId = req.session.user.id
+    const userId = req.session.user.id;
 
     // Check if the user already has a computer record
     const existing = db
@@ -75,22 +75,22 @@ router.get('/computer', (req, res) => {
 
     if (!existing) {
       // --- INSERT NEW RECORD ---
-      const query = `INSERT INTO computer (user_id) VALUES (?)`
+      const query = `INSERT INTO computer (user_id) VALUES (?)`;
       db.prepare(query).run(userId);
     }
-    const query = `SELECT * FROM computer WHERE user_id = ?`
+    const query = `SELECT * FROM computer WHERE user_id = ?`;
     const computer = db.prepare(query).get(userId);
 
     return res.status(200).json(OK("Successfully retrieved data", computer));
-
   } catch (err: any) {
     console.error(`DB error for computer:`, err);
     return res.status(500).json(InternalServerError());
   }
-})
+});
 
 tables.forEach((endpoint) => {
   router.post(`/computer/${endpoint}`, (req, res) => {
+    console.log(req.session)
     if (!req.session.user) {
       return res.status(400).json(BadRequest("You are not logged in"));
     }
@@ -121,7 +121,7 @@ tables.forEach((endpoint) => {
   });
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password)
@@ -148,6 +148,8 @@ router.post('/login', async (req, res) => {
     // 4. Save to session
     req.session.user = { id: userId };
 
+    console.log(req.session)
+
     return res.status(200).json(OK("Logged in", { userId }));
   } catch (err: any) {
     console.error("DB error for login:", err);
@@ -155,5 +157,33 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Endpoint to fetch benchmark data for a specific 'type' of part
+router.get("/benchmarks/:type", (req, res) => {
+  const type = req.params.type.toUpperCase().trim();
+  const limit = parseInt(req.query.limit as string) || 100000;
+  const offset = parseInt(req.query.offset as string) || 0; // default 0
+  const sort = (req.query.sort as string)?.toLowerCase() || "rank";
+  const sortOrder = (req.query.sortOrder as string)?.toUpperCase() || "ASC";
+
+  const validSorts = ["brand", "model", "rank", "benchmark", "samples"];
+  const validOrders = ["ASC", "DESC"];
+
+  if (!validSorts.includes(sort) || !validOrders.includes(sortOrder)) {
+    return res.status(400).json(BadRequest("Invalid sort or sortOrder parameters"));
+  }
+
+  try {
+    const rows = db
+      .prepare(`SELECT * FROM benchmarks WHERE \`type\` = ? ORDER BY \`${sort}\` ${sortOrder} LIMIT ? OFFSET ?`)
+      .all(type, limit, offset);
+
+    return res
+      .status(200)
+      .json(OK("Successfully retrieved benchmark data", rows));
+  } catch (err: any) {
+    console.error(`DB error for ${type} benchmarks:`, err);
+    return res.status(500).json(InternalServerError());
+  }
+});
 
 export default router;
