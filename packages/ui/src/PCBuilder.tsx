@@ -4,24 +4,24 @@ import type { BasePart, Computer } from "./types/types";
 import { Layout } from "./layout/layout";
 
 const computerKeys: (keyof Computer)[] = [
-  "keyboard",
-  "speakers",
-  "memory",
-  "thermal_paste",
-  "pc_case",
-  "monitor",
+  "cpu",
   "cpu_cooler",
   "motherboard",
+  "memory",
   "video_card",
-  "cpu",
-  "mouse",
-  "webcam",
-  "external_hard_drive",
-  "os",
-  "headphones",
-  "power_supply",
-  "internal_hard_drive",
   "sound_card",
+  "power_supply",
+  "thermal_paste",
+  "internal_hard_drive",
+  "pc_case",
+  "os",
+  "external_hard_drive",
+  "monitor",
+  "speakers",
+  "headphones",
+  "mouse",
+  "keyboard",
+  "webcam",
 ];
 
 const emptyComputer: Computer = Object.fromEntries(
